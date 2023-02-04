@@ -7,9 +7,9 @@ Project idea taken from this [paper](https://arxiv.org/abs/1502.03044) and *Refe
 
 ## Dataset
 
-The dataset included about 9.3 million *"image + one caption"* pairs from the [Conceptual Captions](https://aclanthology.org/P18-1238.pdf) and *IStock*. Validation set consisted of 10k samples. Each image was resized to 299\*299 resolution to speed up loading between experiments. Dataset must be converted to the format of the example files in the *./data* folder by using *utils.generate_json_data()*.  
+The dataset included about 9.3 million *"image + one caption"* pairs from the [Conceptual Captions](https://aclanthology.org/P18-1238.pdf) and *IStock*. Validation set consisted of 10k samples. Each image was resized to 299\*299 resolution to speed up loading between experiments. Dataset must be converted to the format of the example files in the `./data` folder by using `utils.generate_json_data()`.  
 
-After analyzing the captions, it turned out that ~15% contain words that need to be replaced or deleted - this is, for example, an indication of specific locations, names of something, dates, etc. To solve the problem of getting rid of all this baggage, the [Spacy library](https://spacy.io/) was used, which replaces all the above cases with special tags. With it, we replaced the special tag *PERSON* with synonyms of this word \(for the sake of variety\), the special tag *CARDINAL* (denoting numbers) was simply removed. If the caption included any of the other 16 tags, then we did not take such a caption \(and therefore the image corresponding to it\) into the dataset, the same with too short captions \(the length is less than 4 tokens\).  
+After analyzing the captions, it turned out that ~15% contain words that need to be replaced or deleted - this is, for example, an indication of specific locations, names of something, dates, etc. To solve the problem of getting rid of all this baggage, the [Spacy](https://spacy.io/) was used, which replaces all the above cases with special tags. With it, we replaced the special tag *PERSON* with synonyms of this word \(for the sake of variety\), the special tag *CARDINAL* (denoting numbers) was simply removed. If the caption included any of the other 16 tags, then we did not take such a caption \(and therefore the image corresponding to it\) into the dataset, the same with too short captions \(the length is less than 4 tokens\).  
 
 **Note by 2023:** Now there are much larger datasets, such as [LAION-5B](https://arxiv.org/pdf/2210.08402.pdf), I recommend to use it. Also today this architecture is very outdated relative to modern ones.
 
@@ -20,7 +20,7 @@ After 7 epochs validation **BLEU=0.308** was reached, [model weights](https://dr
 
 ## Beam Search Modification
 
-To improve the quality and diversity of the captions candidates for single image, the ideas from [this paper](https://arxiv.org/pdf/1610.02424.pdf) were used, which boil down to automatically lowering the score of those words that have already been generated earlier. To regulate the length of the captions, a similar approach was used - to lower the score of the end-token in the first n steps, where n is the desired minimum length of the output captions. Testing has shown that the above operations should be carried out only for one of the internal candidates of the algorithm. Ultimately, with the help of the algorithm modifications described above, it was possible to achieve a much better quality of generated captions for the same model.
+To improve the quality and diversity of the captions candidates for single image, the ideas from this [paper](https://arxiv.org/pdf/1610.02424.pdf) were used, which boil down to automatically lowering the score of those words that have already been generated earlier. To regulate the length of the captions, a similar approach was used - to lower the score of the end-token in the first n steps, where n is the desired minimum length of the output captions. Testing has shown that the above operations should be carried out only for one of the internal candidates of the algorithm. Ultimately, with the help of the algorithm modifications described above, it was possible to achieve a much better quality of generated captions for the same model.
 
 ## Additional human evaluation
 
@@ -44,7 +44,7 @@ What changes have I added to the code compared to previous implementations:
 * Beam search algorithm update for generation of the several different caption candidates
 * Changing the dataset format to be able to work effectively with millions of samples
 * Adding pipeline for model conversion for *tensorflow-serving*
-* Replacing LSTMCell layer to LSTM for ONNX model conversion
+* Replacing LSTMCell layer to LSTM for possibility ONNX model conversion
 * Replacing image encoder to much stronger *resnext101_32x8d_wsl*
 
 ## Reference implementations
